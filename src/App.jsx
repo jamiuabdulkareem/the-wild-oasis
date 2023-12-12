@@ -1,20 +1,20 @@
-import styled from "styled-components";
 import GlobalStyles from "./styles/GlobalStyles";
 import Button from "./ui/Button";
 import Input from "./ui/Input";
-
-const H1 = styled.h1`
-  font-size: 30px;
-  font-weight: 600;
-  background-color: yellow;
-`;
+import Heading from "./ui/Heading";
 
 function App() {
   return (
     <>
       <GlobalStyles />
-      <H1>The Wild Oasis</H1>
+      <Heading type="h1">The Wild Oasis</Heading>
+
+      <Heading type="h2">Check in and out</Heading>
       <Button>Check in</Button>
+      <Button>Check out</Button>
+      <Input type="number" placeholder="Number of guest" />
+
+      <Heading type="h3">Form</Heading>
       <Input type="number" placeholder="Number of guest" />
     </>
   );
