@@ -47,9 +47,11 @@ const Error = styled.span`
 `;
 
 function CreateCabinForm() {
+  // React-queryClient
   const queryClient = useQueryClient();
-  const { register, handleSubmit, reset } = useForm();
-
+  // This is useForm hook
+  const { register, handleSubmit, reset, getValues } = useForm();
+  // React query mutaion hook to manage
   const { mutate, isLoading } = useMutation({
     mutationFn: createCabin,
     onSuccess: () => {
@@ -66,7 +68,9 @@ function CreateCabinForm() {
     mutate(data);
   }
 
-  function onError() {}
+  function onError(errors) {
+    console.log(errors);
+  }
 
   return (
     <Form onSubmit={handleSubmit(onSubmit, onError)}>
@@ -88,6 +92,10 @@ function CreateCabinForm() {
           id="maxCapacity"
           {...register("maxCapacity", {
             required: "This field is required",
+            min: {
+              value: 1,
+              message: "Capacity should be at least 1",
+            },
           })}
         />
       </FormRow>
@@ -99,6 +107,10 @@ function CreateCabinForm() {
           id="regularPrice"
           {...register("regularPrice", {
             required: "This field is required",
+            min: {
+              value: 1,
+              message: "Capacity should be at least 1",
+            },
           })}
         />
       </FormRow>
@@ -111,6 +123,9 @@ function CreateCabinForm() {
           defaultValue={0}
           {...register("discount", {
             required: "This field is required",
+            validate: (value) =>
+              value <= getValues().regularPrice ||
+              "Discount should be less that the regular price",
           })}
         />
       </FormRow>
