@@ -51,7 +51,7 @@ function CreateCabinForm() {
   const queryClient = useQueryClient();
   // This is useForm hook
   const { register, handleSubmit, reset, getValues } = useForm();
-  // React query mutaion hook to manage
+  // React query mutaion hook to manage async task
   const { mutate, isLoading } = useMutation({
     mutationFn: createCabin,
     onSuccess: () => {
