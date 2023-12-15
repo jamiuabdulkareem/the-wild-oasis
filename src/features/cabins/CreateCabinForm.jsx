@@ -7,20 +7,25 @@ import Form from "../../ui/Form";
 import Button from "../../ui/Button";
 import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
-import { createCabin } from "../../services/apiCabins";
+import { createEditCabin } from "../../services/apiCabins";
 import FormRow from "../../ui/FormRow";
 
-function CreateCabinForm() {
+function CreateCabinForm({ cabinToEdit = {} }) {
+  const { id: editId, ...editValue } = cabinToEdit;
+  const isEditSession = Boolean(editId);
+
   // React-queryClient
   const queryClient = useQueryClient();
   // This is useForm hook
-  const { register, handleSubmit, reset, getValues, formState } = useForm();
+  const { register, handleSubmit, reset, getValues, formState } = useForm({
+    defaultValues: isEditSession ? editValue : {},
+  });
   // get form error
   const { errors } = formState;
 
-  // React query mutaion hook to manage async task
-  const { mutate, isLoading } = useMutation({
-    mutationFn: createCabin,
+  // React query mutaion hook to manage create new cabin async task
+  const { mutate: createCabin, isLoading } = useMutation({
+    mutationFn: createEditCabin,
     onSuccess: () => {
       {
         toast.success("New cabin successfully created");
@@ -31,8 +36,24 @@ function CreateCabinForm() {
     onError: (err) => toast.error(err.message),
   });
 
+  const { mutate: editCabin, isLoading: isEditing } = useMutation({
+    mutationFn: ({ newCabinData, id }) => createEditCabin(newCabinData, id),
+    onSuccess: () => {
+      {
+        toast.success("Cabin successfully edited");
+        queryClient.invalidateQueries({ queryKey: ["cabins"] });
+        reset();
+      }
+    },
+    onError: (err) => toast.error(err.message),
+  });
+
+  const isWorking = isLoading || isEditing;
+
   function onSubmit(data) {
-    mutate({ ...data, image: data.image[0] });
+    console.log(data);
+
+    // mutate({ ...data, image: data.image[0] });
   }
 
   // onError was use to handle form error
@@ -46,7 +67,7 @@ function CreateCabinForm() {
         <Input
           type="text"
           id="name"
-          disabled={isLoading}
+          disabled={isWorking}
           {...register("name", {
             required: "This field is required",
           })}
@@ -57,7 +78,7 @@ function CreateCabinForm() {
         <Input
           type="tel"
           id="maxCapacity"
-          disabled={isLoading}
+          disabled={isWorking}
           {...register("maxCapacity", {
             required: "This field is required",
             min: {
@@ -72,7 +93,7 @@ function CreateCabinForm() {
         <Input
           type="tel"
           id="regularPrice"
-          disabled={isLoading}
+          disabled={isWorking}
           {...register("regularPrice", {
             required: "This field is required",
             min: {
@@ -87,7 +108,7 @@ function CreateCabinForm() {
         <Input
           type="tel"
           id="discount"
-          disabled={isLoading}
+          disabled={isWorking}
           defaultValue={0}
           {...register("discount", {
             required: "This field is required",
@@ -105,7 +126,7 @@ function CreateCabinForm() {
         <Textarea
           type="number"
           id="description"
-          disabled={isLoading}
+          disabled={isWorking}
           defaultValue=""
           {...register("description", {
             required: "This field is required",
@@ -119,7 +140,7 @@ function CreateCabinForm() {
           accept="image/*"
           type="file"
           {...register("image", {
-            required: "This field is required",
+            required: isEditSession ? false : "This field is required",
           })}
         />
       </FormRow>
@@ -129,7 +150,9 @@ function CreateCabinForm() {
         <Button variation="secondary" type="reset">
           Cancel
         </Button>
-        <Button disabled={isLoading}>Add cabin</Button>
+        <Button disabled={isWorking}>
+          {isEditSession ? "Edit cabin" : "Create new cabin"}
+        </Button>
       </FormRow>
     </Form>
   );
