@@ -51,9 +51,11 @@ function CreateCabinForm({ cabinToEdit = {} }) {
   const isWorking = isLoading || isEditing;
 
   function onSubmit(data) {
-    console.log(data);
+    const image = typeof data.image === "string" ? data.image : data.image[0];
 
-    // mutate({ ...data, image: data.image[0] });
+    if (isEditSession)
+      editCabin({ newCabinData: { ...data, image }, id: editId });
+    else createCabin({ ...data, image: image });
   }
 
   // onError was use to handle form error
