@@ -57,11 +57,17 @@ function CabinRow({ cabin }) {
     regularPrice,
     discount,
     image,
+    description
   } = cabin;
 
   function handleDuplicate() {
     createCabin({
       name: `Copy of ${name}`,
+      maxCapacity,
+      regularPrice,
+      discount,
+      image,
+      description
     });
   }
 
@@ -78,7 +84,7 @@ function CabinRow({ cabin }) {
           <span>&mdash;</span>
         )}
         <div>
-          <button>
+          <button onClick={handleDuplicate}>
             <HiSquare2Stack />
           </button>
           <button onClick={() => setShowForm((show) => !show)}>
