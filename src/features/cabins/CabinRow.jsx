@@ -57,7 +57,7 @@ function CabinRow({ cabin }) {
     regularPrice,
     discount,
     image,
-    description
+    description,
   } = cabin;
 
   function handleDuplicate() {
@@ -67,7 +67,7 @@ function CabinRow({ cabin }) {
       regularPrice,
       discount,
       image,
-      description
+      description,
     });
   }
 
@@ -84,7 +84,7 @@ function CabinRow({ cabin }) {
           <span>&mdash;</span>
         )}
         <div>
-          <button onClick={handleDuplicate}>
+          <button disabled={isCreating} onClick={handleDuplicate}>
             <HiSquare2Stack />
           </button>
           <button onClick={() => setShowForm((show) => !show)}>
