@@ -10,7 +10,7 @@ import FormRow from "../../ui/FormRow";
 import { useCreateCabin } from "./useCreateCabin";
 import { useEditCabin } from "./useEditCabin";
 
-function CreateCabinForm({ cabinToEdit = {} }) {
+function CreateCabinForm({ cabinToEdit = {}, onCloseModal }) {
   const { id: editId, ...editValue } = cabinToEdit;
   const isEditSession = Boolean(editId);
 
@@ -136,7 +136,7 @@ function CreateCabinForm({ cabinToEdit = {} }) {
 
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button variation="secondary" type="reset">
+        <Button onClick={onCloseModal} variation="secondary" type="reset">
           Cancel
         </Button>
         <Button disabled={isWorking}>
